@@ -36,4 +36,3 @@ async def value_error_handler(request: Request, exc: ValueError):
             "message": str(exc),
         }
     )
-    

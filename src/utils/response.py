@@ -2,8 +2,6 @@
 
 from typing import Any
 
-from fastapi import status
-
 from src.schemas.response import Metadata, ResponseSchema
 
 
