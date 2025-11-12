@@ -2,23 +2,32 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    # Environment variables for app & tests
+    env:
+      PROJECT_NAME: "fastapi-trello-services"
+      ENVIRONMENT: "test"
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
     steps:
+      # Checkout repo
       - name: Checkout code
         uses: actions/checkout@v5
 
+      # Set up Python
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.13'
 
+      # Set up uv with caching
       - name: Set up uv
         uses: astral-sh/setup-uv@v7
         with:
@@ -27,21 +36,27 @@ jobs:
           cache-dependency-glob: |
             pyproject.toml
             uv.lock
-     
-      - name: Create virtual environment
-        run: uv venv
 
+      # Sync dependencies (creates venv automatically)
       - name: Install dependencies
-        run: |
-          uv sync --all-extras
+        run: uv sync --all-extras
 
+      # Lint code using Ruff
       - name: Run Ruff linter
-        run: uv run ruff check src
+        run: uv run ruff check src --output-format=github
 
+      # Run tests with pytest and collect coverage
       - name: Run tests with Pytest and Coverage
         run: |
-          uv run pytest --maxfail=1 --disable-warnings -q --cov=src --cov-report=xml
+          uv run pytest src \
+            --maxfail=1 \
+            --disable-warnings \
+            -q \
+            --cov=src \
+            --cov-report=xml \
+            --junitxml=pytest-results.xml
 
+      # Upload coverage report to Codecov
       - name: Upload coverage to Codecov
         if: success()
         uses: codecov/codecov-action@v5
@@ -50,9 +65,12 @@ jobs:
           files: ./coverage.xml
           fail_ci_if_error: false
 
+      # Upload test artifacts for debugging (always runs)
       - name: Upload test results (optional)
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: pytest-results
-          path: .pytest_cache
+          path: |
+            pytest-results.xml
+            coverage.xml
