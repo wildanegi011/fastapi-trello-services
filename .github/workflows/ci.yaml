@@ -48,7 +48,7 @@ jobs:
       # Run tests with pytest and collect coverage
       - name: Run tests with Pytest and Coverage
         run: |
-          uv run pytest src \
+          uv run pytest tests \
             --maxfail=1 \
             --disable-warnings \
             -q \
