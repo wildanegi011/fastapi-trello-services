@@ -33,8 +33,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv pip install .
-          uv run pip install pytest-cov
+          uv sync
 
       - name: Run Ruff linter
         run: uv run ruff check .
