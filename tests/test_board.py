@@ -3,12 +3,17 @@
 from uuid import uuid4
 
 
-def test_get_boards(client):
+def test_get_boards(client, board):
     """Test get boards."""
     response = client.get("/api/boards/")
     assert response.status_code == 200
+
     data = response.json()
+    assert "data" in data
+    assert isinstance(data["data"], list)
+    assert len(data["data"]) > 0
     assert "id" in data["data"][0]
+    assert data["data"][0]["title"] == board.title
 
 def test_create_board(client):
     """Test create board."""

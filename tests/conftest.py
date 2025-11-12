@@ -45,7 +45,7 @@ def board(db_session):
     """Test board."""
     board = Board(
         id=uuid4(),
-        title="Test Board",
+        title="My Test Board",
         org_id="This is a test board",
         image_id="This is a test board",
         image_thumb_url="This is a test board",
