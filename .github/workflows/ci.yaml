@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD Pipeline
 
 on:
   push:
@@ -19,33 +19,27 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'pyproject.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Setup uv
+      - name: Set up uv
         uses: astral-sh/setup-uv@v7
         with:
           version: "0.4.15"
           enable-cache: true
           cache-dependency-glob: |
-            requirements**.txt
             pyproject.toml
+            uv.lock
 
       - name: Install dependencies
-        run: uv pip sync
+        run: |
+          uv pip install .
+          uv run pip install pytest-cov
 
-      - name: Lint with Ruff
+      - name: Run Ruff linter
         run: uv run ruff check .
-        
-      - name: Run tests with Pytest
+
+      - name: Run tests with Pytest and Coverage
         run: |
           uv run pytest --maxfail=1 --disable-warnings -q --cov=. --cov-report=xml
-          
+
       - name: Upload coverage to Codecov
         if: success()
         uses: codecov/codecov-action@v5
@@ -53,3 +47,10 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
           fail_ci_if_error: false
+
+      - name: Upload test results (optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-results
+          path: .pytest_cache
