@@ -13,6 +13,7 @@ jobs:
     # Environment variables for app & tests
     env:
       PROJECT_NAME: "fastapi-trello-services"
+      VERSION: "0.1.0"
       ENVIRONMENT: "test"
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
