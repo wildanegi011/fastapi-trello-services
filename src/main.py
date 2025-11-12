@@ -5,7 +5,6 @@ from fastapi.responses import JSONResponse
 
 from src.api.endpoints import boards
 from src.core.config import settings
-from src.utils.response import error_response
 
 app = FastAPI()
 
@@ -37,3 +36,4 @@ async def value_error_handler(request: Request, exc: ValueError):
             "message": str(exc),
         }
     )
+    
