@@ -15,8 +15,16 @@ dependencies = [
 [tool.fastapi]
 entrypoint = "src.main:app"
 
+[tool.uv]
+dev-dependencies = [
+    "ruff",
+    "pytest",
+    "pytest-cov",
+]
+
 # Ruff configuration
 [tool.ruff]
+src = ["src"]
 target-version = "py313"
 line-length = 120
 
