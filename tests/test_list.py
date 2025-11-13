@@ -2,6 +2,8 @@
 
 from uuid import uuid4
 
+import pytest
+
 
 def test_get_lists(client, list_model):
     """Test get lists."""
@@ -83,4 +85,16 @@ def test_not_found_board_id_when_create_list(client):
     }
     response = client.post("/api/lists/", json=payload)
     assert response.status_code == 404
+
+
+def test_create_list_exception(client, board_model, mocker):
+    """Test create list exception."""
+    mocker.patch("sqlalchemy.orm.Session.commit", side_effect=Exception("Database error"))
+
+    payload: dict = {
+        "title": "My Test List",
+        "board_id": str(board_model.id),
+    }
+    with pytest.raises(Exception, match="Database error"):
+        client.post("/api/lists/", json=payload)
 
