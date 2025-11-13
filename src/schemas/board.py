@@ -1,5 +1,8 @@
 """Board schema."""
 
+import uuid
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
@@ -19,3 +22,16 @@ class BoardCreate(BoardBase):
     """Board Create Schema."""
 
     pass
+
+class BoardUpdate(BoardBase):
+    """Board Update Schema."""
+
+    pass
+
+
+class Board(BoardBase):
+    """Board Schema."""
+
+    id: uuid.UUID
+    created_at: datetime | None = None
+    updated_at: datetime | None = None

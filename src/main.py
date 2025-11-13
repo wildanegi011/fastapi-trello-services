@@ -3,18 +3,24 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from src.api.endpoints import boards
+from src.api.endpoints import boards, cards, lists
 from src.core.config import settings
 
-app = FastAPI()
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    description="Trello Services",
+    version=settings.VERSION,
+)
 
 app.include_router(boards.router, prefix="/api/boards", tags=["boards"])
+app.include_router(lists.router, prefix="/api/lists", tags=["lists"])
+app.include_router(cards.router, prefix="/api/cards", tags=["cards"])
 
 @app.get("/")
 async def root():
     """Root endpoint."""
     return {
-        "message": "Trello Services API",
+        "message": "Trello Services",
         "version": settings.VERSION,
         "docs": "/docs",
     }
