@@ -2,10 +2,8 @@
 
 from uuid import UUID
 
-from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from src.models.board import Board
 from src.models.list import List
 from src.schemas.list import ListCreate, ListUpdate
 from src.services.board import BoardService
