@@ -3,7 +3,7 @@
 from uuid import uuid4
 
 
-def test_get_lists(client, board_model):
+def test_get_lists(client, list_model):
     """Test get lists."""
     response = client.get("/api/lists/")
     assert response.status_code == 200
@@ -13,6 +13,7 @@ def test_get_lists(client, board_model):
     assert isinstance(data["data"], list)
     assert len(data["data"]) > 0
     assert "id" in data["data"][0]
+    assert data["data"][0]["title"] == list_model.title
 
 def test_create_list(client, board_model):
     """Test create list."""

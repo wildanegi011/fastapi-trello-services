@@ -13,6 +13,7 @@ def test_get_cards(client, card_model):
     assert isinstance(data["data"], list)
     assert len(data["data"]) > 0
     assert "id" in data["data"][0]
+    assert data["data"][0]["title"] == card_model.title
 
 def test_create_card(client, list_model):
     """Test create card."""
